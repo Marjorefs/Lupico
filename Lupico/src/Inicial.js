@@ -3,75 +3,59 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
+  Image,
 } from 'react-native';
+
+import { styles } from './Style';
 
 export default function Inicial({ navigation }) {
   return (
-    <View style={styles.container}>
+    <View style={styles.containerInicial}>
 
-      <Text style={styles.logo}>Lúpico</Text>
+      <View style={styles.headerInicial}>
+        <Image
+          source={require('../assets/imagens/borboleta.png')}
+          style={styles.borboleta}
+          resizeMode="contain"
+        />
+      </View>
 
-      <Text style={styles.descricao}>
-        O aplicativo Lúpico foi desenvolvido com o objetivo de auxiliar pacientes
-        com Lúpus Eritematoso Sistêmico (LES) no acompanhamento de sua condição clínica.
-      </Text>
+      <View style={styles.conteudoInicial}>
+        <View style={styles.areaLogo}>
+          <Image
+            source={require('../assets/imagens/logo.jpeg')}
+            style={styles.logoInicial}
+            resizeMode="contain"
+          />
 
-      <TouchableOpacity
-        style={styles.botao}
-        onPress={() => navigation.navigate('Login')}
-      >
-        <Text style={styles.textoBotao}>
-          Efetuar Login
-        </Text>
-      </TouchableOpacity>
+          <Text style={styles.nomeApp}>Lúpico</Text>
+        </View>
 
-      <TouchableOpacity
-        style={styles.botao}
-        onPress={() => navigation.navigate('Cadastro')}
-      >
-        <Text style={styles.textoBotao}>
-          Cadastrar
-        </Text>
-      </TouchableOpacity>
+        <View style={styles.caixaDescricao}>
+          <Text style={styles.textoDescricao}>
+            O aplicativo Lúpico foi desenvolvido com o objetivo de auxiliar pacientes
+            diagnosticados com Lúpus Eritematoso Sistêmico (LES) no acompanhamento
+            de sua rotina de cuidados diários.
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.botaoInicial}
+          onPress={() => navigation.navigate('Login')}
+        >
+          <Text style={styles.textoBotaoInicial}>Efetuar Login</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.botaoInicial}
+          onPress={() => navigation.navigate('Cadastro')}
+        >
+          <Text style={styles.textoBotaoInicial}>Cadastrar</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.footerInicial} />
 
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-
-  logo: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#9C27B0',
-    marginBottom: 40,
-  },
-
-  descricao: {
-    textAlign: 'center',
-    marginBottom: 50,
-    color: '#555',
-  },
-
-  botao: {
-    backgroundColor: '#9C27B0',
-    width: '80%',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 15,
-    alignItems: 'center',
-  },
-
-  textoBotao: {
-    color: '#FFF',
-    fontWeight: 'bold',
-  },
-});
