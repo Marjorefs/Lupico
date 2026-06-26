@@ -1,78 +1,51 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
+import { styles } from './Style';
 
 export default function Login({ navigation }) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.logo}>🦋 Lúpico</Text>
+    <View style={styles.containerTela}>
+      <View style={styles.headerTela}>
 
-      <View style={styles.card}>
-        <Text style={styles.titulo}>Efetuar login:</Text>
+  <View style={styles.logoHeader}>
+    <Image
+      source={require('../assets/imagens/borboleta.png')}
+      style={styles.borboletaPequena}
+      resizeMode="contain"
+    />
+
+    <Text style={styles.nomeHeader}>Lúpico</Text>
+  </View>
+
+  <Text style={styles.menuIcone}>☰</Text>
+
+</View>
+
+      <View style={styles.cardTela}>
+        <Text style={styles.tituloTela}>Efetuar login:</Text>
 
         <Text style={styles.label}>E-mail para login:</Text>
-        <TextInput style={styles.input} keyboardType="email-address" />
+        <TextInput
+          style={styles.input}
+          keyboardType="email-address"
+          placeholder="Digite seu e-mail"
+        />
 
         <Text style={styles.label}>Senha para login:</Text>
-        <TextInput style={styles.input} secureTextEntry />
+        <TextInput
+          style={styles.input}
+          secureTextEntry
+          placeholder="Digite sua senha"
+        />
 
         <TouchableOpacity
-          style={styles.botao}
+          style={styles.botaoFormulario}
           onPress={() => navigation.navigate('Apresentacao')}
         >
-          <Text style={styles.botaoTexto}>Confirmar</Text>
+          <Text style={styles.textoBotaoInicial}>Confirmar</Text>
         </TouchableOpacity>
       </View>
+
+      <View style={styles.footerInicial} />
     </View>
   );
 }
-
-const roxo = '#b000e8';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: roxo,
-    padding: 14,
-  },
-  logo: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 18,
-  },
-  card: {
-    flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 6,
-    padding: 16,
-  },
-  titulo: {
-    color: roxo,
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 18,
-  },
-  label: {
-    fontSize: 12,
-    color: '#4b0082',
-    marginBottom: 4,
-  },
-  input: {
-    backgroundColor: '#f7e6ff',
-    borderWidth: 1,
-    borderColor: roxo,
-    borderRadius: 5,
-    padding: 8,
-    marginBottom: 14,
-  },
-  botao: {
-    backgroundColor: roxo,
-    padding: 12,
-    borderRadius: 6,
-    marginTop: 'auto',
-  },
-  botaoTexto: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-});
