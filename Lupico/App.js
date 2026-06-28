@@ -5,7 +5,12 @@ import Inicial from './src/Inicial';
 import Login from './src/Login';
 import DadosPessoais from './src/DadosPessoais';
 import Cadastro from './src/Cadastro';
-import Apresentacao from './src/Apresentacao';
+import Home from './src/Home';
+//import Sintomas from './src/Sintomas';
+import Receitas from './src/Receitas';
+import Exames from './src/Exames';
+import Medicamentos from './src/Medicamentos';
+import Cuidados from './src/Cuidados';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,7 +22,13 @@ export default function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Cadastro" component={Cadastro} />
         <Stack.Screen name="DadosPessoais" component={DadosPessoais} />
-        <Stack.Screen name="Apresentacao" component={Apresentacao} />
+        <Stack.Screen name="Home" component={Home} />
+        {/*<Stack.Screen name="Sintomas" component={Sintomas} /> */}
+        <Stack.Screen name="Receitas" component={Receitas} />
+        <Stack.Screen name="Exames" component={Exames} />
+        <Stack.Screen name="Medicamentos" component={Medicamentos} />
+        <Stack.Screen name="Cuidados" component={Cuidados} />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -149,6 +149,17 @@ export const styles = StyleSheet.create({
     marginBottom: 18,
   },
 
+  inputGrande: {
+  backgroundColor: '#F7E9FF',
+  borderWidth: 1.5,
+  borderColor: ROXO,
+  borderRadius: 10,
+  paddingHorizontal: 12,
+  paddingTop: 12,
+  height: 110,
+  marginBottom: 18,
+},
+
   botaoFormulario: {
     backgroundColor: ROXO,
     paddingVertical: 15,
@@ -179,5 +190,96 @@ menuIcone: {
   fontWeight: 'bold',
   marginTop: 30,
 },
+
+//Tela Home
+
+homeConteudo: {
+  flex: 1,
+  paddingHorizontal: 24,
+  paddingTop: 35,
+  backgroundColor: '#FFFFFF',
+},
+
+homeTitulo: {
+  color: ROXO,
+  fontSize: 22,
+  fontWeight: 'bold',
+  textAlign: 'center',
+  marginBottom: 35,
+},
+
+cardsContainer: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  justifyContent: 'space-between',
+},
+
+cardHome: {
+  width: '47%',
+  backgroundColor: '#F7E9FF',
+  borderWidth: 1.5,
+  borderColor: ROXO,
+  borderRadius: 18,
+  paddingVertical: 22,
+  alignItems: 'center',
+  marginBottom: 20,
+},
+
+iconeHome: {
+  width: 60,
+  height: 60,
+  marginBottom: 12,
+},
+
+textoCardHome: {
+  color: ROXO,
+  fontSize: 15,
+  fontWeight: 'bold',
+  textAlign: 'center',
+},
+
+caixaInfo: {
+  backgroundColor: '#F7E9FF',
+  borderRadius: 14,
+  borderWidth: 1.5,
+  borderColor: ROXO,
+  padding: 16,
+  alignItems: 'center',
+  marginTop: 8,
+},
+
+textoInfo: {
+  color: '#2F2437',
+  fontSize: 14,
+  fontWeight: 'bold',
+  textAlign: 'center',
+  marginBottom: 8,
+},
+
+iconeLink: {
+  fontSize: 24,
+  color: ROXO,
+},
+
+linkContainer: {
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+
+textoLink: {
+  color: ROXO,
+  fontSize: 14,
+  marginTop: 6,
+  textAlign: 'center',
+},
+
+rodape: {
+  height: 70,
+  backgroundColor: ROXO,
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-around',
+},
+
 });
 
