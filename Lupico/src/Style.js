@@ -281,5 +281,117 @@ rodape: {
   justifyContent: 'space-around',
 },
 
+//Tela perfil
+
+caixaPerfil: {
+  backgroundColor: '#F7E9FF',
+  borderWidth: 1.5,
+  borderColor: ROXO,
+  borderRadius: 16,
+  padding: 18,
+},
+
+labelPerfil: {
+  color: ROXO,
+  fontSize: 14,
+  fontWeight: 'bold',
+  marginTop: 10,
+},
+
+valorPerfil: {
+  color: '#2F2437',
+  fontSize: 15,
+  marginTop: 4,
+},
+
+//Telas receita/exame
+
+itemArquivo: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#F7E9FF',
+  borderWidth: 1.5,
+  borderColor: ROXO,
+  borderRadius: 12,
+  padding: 12,
+  marginBottom: 12,
+},
+
+nomeArquivo: {
+  color: '#2F2437',
+  fontSize: 15,
+  marginLeft: 10,
+  flex: 1,
+},
+
+botaoAdicionar: {
+  backgroundColor: ROXO,
+  paddingVertical: 14,
+  borderRadius: 12,
+  marginTop: 'auto',
+  marginBottom: 25,
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexDirection: 'row',
+},
+
+textoBotaoAdicionar: {
+  color: '#FFFFFF',
+  fontSize: 16,
+  fontWeight: 'bold',
+  marginLeft: 8,
+},
+
+//Tela medicamento
+
+cardMedicamento: {
+  backgroundColor: '#F7E9FF',
+  borderWidth: 1.5,
+  borderColor: ROXO,
+  borderRadius: 12,
+  padding: 14,
+  marginBottom: 12,
+},
+
+linhaMedicamento: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 8,
+},
+
+nomeMedicamento: {
+  color: ROXO,
+  fontSize: 16,
+  fontWeight: 'bold',
+  marginLeft: 10,
+},
+
+detalheMedicamento: {
+  color: '#2F2437',
+  fontSize: 14,
+  marginLeft: 36,
+  marginBottom: 3,
+},
+
+//Tela cuidado
+
+cardCuidado: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#F7E9FF',
+  borderWidth: 1.5,
+  borderColor: ROXO,
+  borderRadius: 12,
+  padding: 14,
+  marginBottom: 12,
+},
+
+textoCuidado: {
+  flex: 1,
+  color: '#2F2437',
+  fontSize: 15,
+  marginLeft: 10,
+},
+
 });
 
