@@ -1,7 +1,52 @@
-import { Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
+import React, { useState } from 'react';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Image,
+  Alert,
+} from 'react-native';
+
 import { styles } from './Style';
+import { supabase } from './services/supabase';
 
 export default function Cadastro({ navigation }) {
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [dataNascimento, setDataNascimento] = useState('');
+  const [tipoSanguineo, setTipoSanguineo] = useState('');
+  const [medicamentos, setMedicamentos] = useState('');
+
+  async function cadastrar() {
+    if (!nome || !email || !senha) {
+      Alert.alert('Atenção', 'Preencha nome, e-mail e senha.');
+      return;
+    }
+
+    const { error } = await supabase
+      .from('usuarios')
+      .insert([
+        {
+          nome,
+          email,
+          senha,
+          data_nascimento: dataNascimento,
+          tipo_sanguineo: tipoSanguineo,
+          medicamentos,
+        },
+      ]);
+
+    if (error) {
+      Alert.alert('Erro', error.message);
+      return;
+    }
+
+    Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+    navigation.navigate('Home');
+  }
+
   return (
     <View style={styles.containerTela}>
       <View style={styles.headerTela}>
@@ -19,25 +64,64 @@ export default function Cadastro({ navigation }) {
       </View>
 
       <View style={styles.cardTela}>
-        <Text style={styles.tituloTela}>Fazer cadastro:</Text>
+        <Text style={styles.tituloTela}>Fazer cadastro</Text>
 
-        <Text style={styles.label}>E-mail para login:</Text>
+        <Text style={styles.label}>Nome:</Text>
         <TextInput
           style={styles.input}
-          keyboardType="email-address"
-          placeholder="Digite seu e-mail"
+          placeholder="Digite seu nome"
+          value={nome}
+          onChangeText={setNome}
         />
 
-        <Text style={styles.label}>Senha para login:</Text>
+        <Text style={styles.label}>E-mail:</Text>
         <TextInput
           style={styles.input}
-          secureTextEntry
+          placeholder="Digite seu e-mail"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
+
+        <Text style={styles.label}>Senha:</Text>
+        <TextInput
+          style={styles.input}
           placeholder="Digite sua senha"
+          secureTextEntry
+          value={senha}
+          onChangeText={setSenha}
+        />
+
+        <Text style={styles.label}>Data de nascimento:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="00/00/0000"
+          value={dataNascimento}
+          onChangeText={setDataNascimento}
+        />
+
+        <Text style={styles.label}>Tipo sanguíneo:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Ex.: O+"
+          value={tipoSanguineo}
+          onChangeText={setTipoSanguineo}
+        />
+
+        <Text style={styles.label}>Medicamentos em uso:</Text>
+        <TextInput
+          style={styles.inputGrande}
+          multiline
+          textAlignVertical="top"
+          placeholder="Digite os medicamentos utilizados"
+          value={medicamentos}
+          onChangeText={setMedicamentos}
         />
 
         <TouchableOpacity
           style={styles.botaoFormulario}
-          onPress={() => navigation.navigate('DadosPessoais')}
+          onPress={cadastrar}
         >
           <Text style={styles.textoBotaoInicial}>Confirmar</Text>
         </TouchableOpacity>
