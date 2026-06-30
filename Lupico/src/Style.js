@@ -393,5 +393,19 @@ textoCuidado: {
   marginLeft: 10,
 },
 
+//Msg de confirmação
+
+mensagemSistema: {
+  backgroundColor: '#F7E9FF',
+  color: ROXO,
+  borderWidth: 1.5,
+  borderColor: ROXO,
+  borderRadius: 10,
+  padding: 10,
+  textAlign: 'center',
+  fontWeight: 'bold',
+  marginBottom: 18,
+},
+
 });
 
