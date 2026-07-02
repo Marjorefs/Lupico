@@ -1,18 +1,61 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as DocumentPicker from 'expo-document-picker';
+
 import { styles, ROXO } from './Style';
 import Rodape from './componentes/Rodape';
 import MenuLateral from './componentes/MenuLateral';
-
-const receitas = [
-  'Receita Reumatologista.pdf',
-  'Receita Dermatologista.pdf',
-  'Receita Oftalmologista.pdf',
-];
+import { supabase } from './services/supabase';
 
 export default function Receitas({ navigation }) {
   const [menuAberto, setMenuAberto] = useState(false);
+  const [receitas, setReceitas] = useState([]);
+  const [mensagem, setMensagem] = useState('');
+
+  async function selecionarReceita() {
+    setMensagem('');
+
+    const resultado = await DocumentPicker.getDocumentAsync({
+      type: 'application/pdf',
+      copyToCacheDirectory: true,
+    });
+
+    if (resultado.canceled) {
+      return;
+    }
+
+    const arquivo = resultado.assets[0];
+    const nomeArquivo = `${Date.now()}_${arquivo.name}`;
+
+    const resposta = await fetch(arquivo.uri);
+    const arquivoArrayBuffer = await resposta.arrayBuffer();
+
+    const { error } = await supabase.storage
+      .from('receitas')
+      .upload(nomeArquivo, arquivoArrayBuffer, {
+        contentType: 'application/pdf',
+      });
+
+    if (error) {
+      setMensagem(error.message);
+      return;
+    }
+
+    const { data } = supabase.storage
+      .from('receitas')
+      .getPublicUrl(nomeArquivo);
+
+    setReceitas((listaAnterior) => [
+      ...listaAnterior,
+      {
+        nome: arquivo.name,
+        url: data.publicUrl,
+      },
+    ]);
+
+    setMensagem('Receita enviada com sucesso!');
+  }
 
   return (
     <View style={styles.containerTela}>
@@ -23,6 +66,7 @@ export default function Receitas({ navigation }) {
             style={styles.borboletaPequena}
             resizeMode="contain"
           />
+
           <Text style={styles.nomeHeader}>Lúpico</Text>
         </View>
 
@@ -42,27 +86,44 @@ export default function Receitas({ navigation }) {
         <Text style={styles.tituloTela}>Receitas</Text>
 
         <Text style={styles.textoInfo}>
-          Anexe suas receitas em formato PDF aqui.
+          Selecione suas receitas em formato PDF.
         </Text>
 
-        {receitas.map((item, index) => (
-          <View style={styles.itemArquivo} key={index}>
-            <Ionicons name="document-text-outline" size={26} color={ROXO} />
-            <Text style={styles.nomeArquivo}>{item}</Text>
-          </View>
-        ))}
+        {mensagem !== '' && (
+          <Text style={styles.mensagemSistema}>{mensagem}</Text>
+        )}
+
+        {receitas.length === 0 ? (
+          <Text style={styles.textoInfo}>
+            Nenhuma receita adicionada.
+          </Text>
+        ) : (
+          receitas.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.itemArquivo}
+              onPress={() => Linking.openURL(item.url)}
+            >
+              <Ionicons
+                name="document-text-outline"
+                size={26}
+                color={ROXO}
+              />
+
+              <Text style={styles.nomeArquivo}>{item.nome}</Text>
+            </TouchableOpacity>
+          ))
+        )}
 
         <TouchableOpacity
           style={styles.botaoAdicionar}
-          onPress={() =>
-            Alert.alert(
-              'Adicionar Receita',
-              'Em breve será possível anexar uma receita em PDF.'
-            )
-          }
+          onPress={selecionarReceita}
         >
           <Ionicons name="add-circle-outline" size={24} color="#FFFFFF" />
-          <Text style={styles.textoBotaoAdicionar}>Adicionar Receita</Text>
+
+          <Text style={styles.textoBotaoAdicionar}>
+            Adicionar Receita
+          </Text>
         </TouchableOpacity>
       </View>
 

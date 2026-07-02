@@ -1,26 +1,65 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as DocumentPicker from 'expo-document-picker';
+
 import { styles, ROXO } from './Style';
 import Rodape from './componentes/Rodape';
 import MenuLateral from './componentes/MenuLateral';
-
-const exames = [
-  'Hemograma Completo.pdf',
-  'Exame de Urina.pdf',
-  'Anti-DNA.pdf',
-];
+import { supabase } from './services/supabase';
 
 export default function Exames({ navigation }) {
-
   const [menuAberto, setMenuAberto] = useState(false);
+  const [exames, setExames] = useState([]);
+  const [mensagem, setMensagem] = useState('');
+
+  async function selecionarExame() {
+    setMensagem('');
+
+    const resultado = await DocumentPicker.getDocumentAsync({
+      type: 'application/pdf',
+      copyToCacheDirectory: true,
+    });
+
+    if (resultado.canceled) {
+      return;
+    }
+
+    const arquivo = resultado.assets[0];
+    const nomeArquivo = `${Date.now()}_${arquivo.name}`;
+
+    const resposta = await fetch(arquivo.uri);
+    const arquivoArrayBuffer = await resposta.arrayBuffer();
+
+    const { error } = await supabase.storage
+      .from('exames')
+      .upload(nomeArquivo, arquivoArrayBuffer, {
+        contentType: 'application/pdf',
+      });
+
+    if (error) {
+      setMensagem(error.message);
+      return;
+    }
+
+    const { data } = supabase.storage
+      .from('exames')
+      .getPublicUrl(nomeArquivo);
+
+    setExames((listaAnterior) => [
+      ...listaAnterior,
+      {
+        nome: arquivo.name,
+        url: data.publicUrl,
+      },
+    ]);
+
+    setMensagem('Exame enviado com sucesso!');
+  }
 
   return (
     <View style={styles.containerTela}>
-
-      {/* Cabeçalho */}
       <View style={styles.headerTela}>
-
         <View style={styles.logoHeader}>
           <Image
             source={require('../assets/imagens/borboleta.png')}
@@ -28,15 +67,12 @@ export default function Exames({ navigation }) {
             resizeMode="contain"
           />
 
-          <Text style={styles.nomeHeader}>
-            Lúpico
-          </Text>
+          <Text style={styles.nomeHeader}>Lúpico</Text>
         </View>
 
         <TouchableOpacity onPress={() => setMenuAberto(!menuAberto)}>
           <Text style={styles.menuIcone}>☰</Text>
         </TouchableOpacity>
-
       </View>
 
       {menuAberto && (
@@ -46,62 +82,46 @@ export default function Exames({ navigation }) {
         />
       )}
 
-      {/* Conteúdo */}
       <View style={styles.cardTela}>
-
-        <Text style={styles.tituloTela}>
-          Exames
-        </Text>
+        <Text style={styles.tituloTela}>Exames</Text>
 
         <Text style={styles.textoInfo}>
-          Anexe seus exames em formato PDF.
+          Selecione seus exames em formato PDF.
         </Text>
 
-        {exames.map((item, index) => (
-          <View
-            key={index}
-            style={styles.itemArquivo}
-          >
+        {mensagem !== '' && (
+          <Text style={styles.mensagemSistema}>{mensagem}</Text>
+        )}
 
-            <Ionicons
-              name="flask-outline"
-              size={26}
-              color={ROXO}
-            />
+        {exames.length === 0 ? (
+          <Text style={styles.textoInfo}>
+            Nenhum exame adicionado.
+          </Text>
+        ) : (
+          exames.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.itemArquivo}
+              onPress={() => Linking.openURL(item.url)}
+            >
+              <Ionicons name="flask-outline" size={26} color={ROXO} />
 
-            <Text style={styles.nomeArquivo}>
-              {item}
-            </Text>
-
-          </View>
-        ))}
+              <Text style={styles.nomeArquivo}>{item.nome}</Text>
+            </TouchableOpacity>
+          ))
+        )}
 
         <TouchableOpacity
           style={styles.botaoAdicionar}
-          onPress={() =>
-            Alert.alert(
-              'Adicionar Exame',
-              'Em breve será possível anexar um exame em PDF.'
-            )
-          }
+          onPress={selecionarExame}
         >
+          <Ionicons name="add-circle-outline" size={24} color="#FFFFFF" />
 
-          <Ionicons
-            name="add-circle-outline"
-            size={24}
-            color="#FFFFFF"
-          />
-
-          <Text style={styles.textoBotaoAdicionar}>
-            Adicionar Exame
-          </Text>
-
+          <Text style={styles.textoBotaoAdicionar}>Adicionar Exame</Text>
         </TouchableOpacity>
-
       </View>
 
       <Rodape navigation={navigation} />
-
     </View>
   );
 }
