@@ -3,11 +3,13 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 
 import { styles } from './Style';
 import Rodape from './componentes/Rodape';
+import MenuLateral from './componentes/MenuLateral';
 import { supabase } from './services/supabase';
 
 export default function Perfil({ navigation }) {
   const [usuario, setUsuario] = useState(null);
   const [mensagem, setMensagem] = useState('');
+  const [menuAberto, setMenuAberto] = useState(false);
 
   async function buscarUsuario() {
     const { data, error } = await supabase
@@ -45,8 +47,17 @@ export default function Perfil({ navigation }) {
           <Text style={styles.nomeHeader}>Lúpico</Text>
         </View>
 
-        <Text style={styles.menuIcone}>☰</Text>
+        <TouchableOpacity onPress={() => setMenuAberto(!menuAberto)}>
+          <Text style={styles.menuIcone}>☰</Text>
+        </TouchableOpacity>
       </View>
+
+      {menuAberto && (
+        <MenuLateral
+          navigation={navigation}
+          fecharMenu={() => setMenuAberto(false)}
+        />
+      )}
 
       <View style={styles.cardTela}>
         <Text style={styles.tituloTela}>Meu perfil</Text>

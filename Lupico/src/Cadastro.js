@@ -5,11 +5,11 @@ import {
   TouchableOpacity,
   View,
   Image,
-  Alert,
 } from 'react-native';
 
 import { styles } from './Style';
 import { supabase } from './services/supabase';
+import MenuInicial from './componentes/MenuInicial';
 
 export default function Cadastro({ navigation }) {
   const [nome, setNome] = useState('');
@@ -18,10 +18,14 @@ export default function Cadastro({ navigation }) {
   const [dataNascimento, setDataNascimento] = useState('');
   const [tipoSanguineo, setTipoSanguineo] = useState('');
   const [medicamentos, setMedicamentos] = useState('');
+  const [mensagem, setMensagem] = useState('');
+  const [menuAberto, setMenuAberto] = useState(false);
 
   async function cadastrar() {
+    setMensagem('');
+
     if (!nome || !email || !senha) {
-      Alert.alert('Atenção', 'Preencha nome, e-mail e senha.');
+      setMensagem('Preencha nome, e-mail e senha.');
       return;
     }
 
@@ -39,12 +43,22 @@ export default function Cadastro({ navigation }) {
       ]);
 
     if (error) {
-      Alert.alert('Erro', error.message);
+      setMensagem(error.message);
       return;
     }
 
-    Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-    navigation.navigate('Home');
+    setMensagem('Cadastro realizado com sucesso!');
+
+    setNome('');
+    setEmail('');
+    setSenha('');
+    setDataNascimento('');
+    setTipoSanguineo('');
+    setMedicamentos('');
+
+    setTimeout(() => {
+      navigation.navigate('Home');
+    }, 800);
   }
 
   return (
@@ -60,11 +74,24 @@ export default function Cadastro({ navigation }) {
           <Text style={styles.nomeHeader}>Lúpico</Text>
         </View>
 
-        <Text style={styles.menuIcone}>☰</Text>
+        <TouchableOpacity onPress={() => setMenuAberto(!menuAberto)}>
+          <Text style={styles.menuIcone}>☰</Text>
+        </TouchableOpacity>
       </View>
+
+      {menuAberto && (
+        <MenuInicial
+          navigation={navigation}
+          fecharMenu={() => setMenuAberto(false)}
+        />
+      )}
 
       <View style={styles.cardTela}>
         <Text style={styles.tituloTela}>Fazer cadastro</Text>
+
+        {mensagem !== '' && (
+          <Text style={styles.mensagemSistema}>{mensagem}</Text>
+        )}
 
         <Text style={styles.label}>Nome:</Text>
         <TextInput

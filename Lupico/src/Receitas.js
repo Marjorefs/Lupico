@@ -1,7 +1,9 @@
+import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { styles, ROXO } from './Style';
 import Rodape from './componentes/Rodape';
+import MenuLateral from './componentes/MenuLateral';
 
 const receitas = [
   'Receita Reumatologista.pdf',
@@ -10,6 +12,8 @@ const receitas = [
 ];
 
 export default function Receitas({ navigation }) {
+  const [menuAberto, setMenuAberto] = useState(false);
+
   return (
     <View style={styles.containerTela}>
       <View style={styles.headerTela}>
@@ -22,8 +26,17 @@ export default function Receitas({ navigation }) {
           <Text style={styles.nomeHeader}>Lúpico</Text>
         </View>
 
-        <Text style={styles.menuIcone}>☰</Text>
+        <TouchableOpacity onPress={() => setMenuAberto(!menuAberto)}>
+          <Text style={styles.menuIcone}>☰</Text>
+        </TouchableOpacity>
       </View>
+
+      {menuAberto && (
+        <MenuLateral
+          navigation={navigation}
+          fecharMenu={() => setMenuAberto(false)}
+        />
+      )}
 
       <View style={styles.cardTela}>
         <Text style={styles.tituloTela}>Receitas</Text>
@@ -39,9 +52,15 @@ export default function Receitas({ navigation }) {
           </View>
         ))}
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.botaoAdicionar}
-          onPress={() => Alert.alert('Adicionar Receita', 'Em breve será possível anexar uma receita em PDF.')}>
+          onPress={() =>
+            Alert.alert(
+              'Adicionar Receita',
+              'Em breve será possível anexar uma receita em PDF.'
+            )
+          }
+        >
           <Ionicons name="add-circle-outline" size={24} color="#FFFFFF" />
           <Text style={styles.textoBotaoAdicionar}>Adicionar Receita</Text>
         </TouchableOpacity>

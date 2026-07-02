@@ -1,7 +1,9 @@
+import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { styles, ROXO } from './Style';
 import Rodape from './componentes/Rodape';
+import MenuLateral from './componentes/MenuLateral';
 
 const cuidados = [
   'Evite exposição ao sol entre 10h e 16h.',
@@ -12,12 +14,11 @@ const cuidados = [
 ];
 
 export default function Cuidados({ navigation }) {
+  const [menuAberto, setMenuAberto] = useState(false);
+
   return (
     <View style={styles.containerTela}>
-
-      {/* Cabeçalho */}
       <View style={styles.headerTela}>
-
         <View style={styles.logoHeader}>
           <Image
             source={require('../assets/imagens/borboleta.png')}
@@ -28,61 +29,49 @@ export default function Cuidados({ navigation }) {
           <Text style={styles.nomeHeader}>Lúpico</Text>
         </View>
 
-        <Text style={styles.menuIcone}>☰</Text>
-
+        <TouchableOpacity onPress={() => setMenuAberto(!menuAberto)}>
+          <Text style={styles.menuIcone}>☰</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Conteúdo */}
-      <View style={styles.cardTela}>
+      {menuAberto && (
+        <MenuLateral
+          navigation={navigation}
+          fecharMenu={() => setMenuAberto(false)}
+        />
+      )}
 
-        <Text style={styles.tituloTela}>
-          Cuidados
-        </Text>
+      <View style={styles.cardTela}>
+        <Text style={styles.tituloTela}>Cuidados</Text>
 
         <Text style={styles.textoInfo}>
           Algumas recomendações importantes para pacientes com Lúpus.
         </Text>
 
         {cuidados.map((item, index) => (
-          <View
-            key={index}
-            style={styles.cardCuidado}
-          >
+          <View key={index} style={styles.cardCuidado}>
+            <Ionicons name="checkmark-circle" size={24} color={ROXO} />
 
-            <Ionicons
-              name="checkmark-circle"
-              size={24}
-              color={ROXO}
-            />
-
-            <Text style={styles.textoCuidado}>
-              {item}
-            </Text>
-
+            <Text style={styles.textoCuidado}>{item}</Text>
           </View>
         ))}
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.botaoAdicionar}
-          onPress={() => Alert.alert('Adicionar Receita', 'Em breve será possível anexar uma receita em PDF.')}
->
+          onPress={() =>
+            Alert.alert(
+              'Adicionar cuidado',
+              'Em breve será possível cadastrar novos cuidados.'
+            )
+          }
+        >
+          <Ionicons name="add-circle-outline" size={24} color="#FFFFFF" />
 
-          <Ionicons
-            name="add-circle-outline"
-            size={24}
-            color="#FFFFFF"
-          />
-
-          <Text style={styles.textoBotaoAdicionar}>
-            Adicionar cuidado
-          </Text>
-
+          <Text style={styles.textoBotaoAdicionar}>Adicionar cuidado</Text>
         </TouchableOpacity>
-
       </View>
 
       <Rodape navigation={navigation} />
-
     </View>
   );
 }

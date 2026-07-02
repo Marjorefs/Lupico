@@ -9,11 +9,13 @@ import {
 
 import { styles } from './Style';
 import { supabase } from './services/supabase';
+import MenuInicial from './componentes/MenuInicial';
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mensagem, setMensagem] = useState('');
+  const [menuAberto, setMenuAberto] = useState(false);
 
   async function fazerLogin() {
     setMensagem('');
@@ -61,8 +63,17 @@ export default function Login({ navigation }) {
           <Text style={styles.nomeHeader}>Lúpico</Text>
         </View>
 
-        <Text style={styles.menuIcone}>☰</Text>
+        <TouchableOpacity onPress={() => setMenuAberto(!menuAberto)}>
+          <Text style={styles.menuIcone}>☰</Text>
+        </TouchableOpacity>
       </View>
+
+      {menuAberto && (
+        <MenuInicial
+          navigation={navigation}
+          fecharMenu={() => setMenuAberto(false)}
+        />
+      )}
 
       <View style={styles.cardTela}>
         <Text style={styles.tituloTela}>Efetuar login:</Text>

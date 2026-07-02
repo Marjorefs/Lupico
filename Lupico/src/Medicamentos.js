@@ -9,18 +9,18 @@ import {
 
 import { styles } from './Style';
 import Rodape from './componentes/Rodape';
+import MenuLateral from './componentes/MenuLateral';
 import { supabase } from './services/supabase';
 
 export default function Medicamentos({ navigation }) {
-
   const [nome, setNome] = useState('');
   const [dosagem, setDosagem] = useState('');
   const [horario, setHorario] = useState('');
   const [observacoes, setObservacoes] = useState('');
   const [mensagem, setMensagem] = useState('');
+  const [menuAberto, setMenuAberto] = useState(false);
 
   async function salvarMedicamento() {
-
     if (!nome || !dosagem || !horario) {
       setMensagem('Preencha os campos obrigatórios.');
       return;
@@ -56,53 +56,41 @@ export default function Medicamentos({ navigation }) {
 
   return (
     <View style={styles.containerTela}>
-
-      {/* Cabeçalho */}
-
       <View style={styles.headerTela}>
-
         <View style={styles.logoHeader}>
-
           <Image
             source={require('../assets/imagens/borboleta.png')}
             style={styles.borboletaPequena}
             resizeMode="contain"
           />
 
-          <Text style={styles.nomeHeader}>
-            Lúpico
-          </Text>
-
+          <Text style={styles.nomeHeader}>Lúpico</Text>
         </View>
 
-        <Text style={styles.menuIcone}>
-          ☰
-        </Text>
-
+        <TouchableOpacity onPress={() => setMenuAberto(!menuAberto)}>
+          <Text style={styles.menuIcone}>☰</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Conteúdo */}
+      {menuAberto && (
+        <MenuLateral
+          navigation={navigation}
+          fecharMenu={() => setMenuAberto(false)}
+        />
+      )}
 
       <View style={styles.cardTela}>
-
-        <Text style={styles.tituloTela}>
-          Medicamentos
-        </Text>
+        <Text style={styles.tituloTela}>Medicamentos</Text>
 
         <Text style={styles.textoInfo}>
           Organize seus medicamentos e horários.
         </Text>
 
         {mensagem !== '' && (
-          <Text style={styles.mensagemSistema}>
-            {mensagem}
-          </Text>
+          <Text style={styles.mensagemSistema}>{mensagem}</Text>
         )}
 
-        <Text style={styles.label}>
-          Nome do medicamento:
-        </Text>
-
+        <Text style={styles.label}>Nome do medicamento:</Text>
         <TextInput
           style={styles.input}
           placeholder="Ex.: Prednisona"
@@ -110,10 +98,7 @@ export default function Medicamentos({ navigation }) {
           onChangeText={setNome}
         />
 
-        <Text style={styles.label}>
-          Dosagem:
-        </Text>
-
+        <Text style={styles.label}>Dosagem:</Text>
         <TextInput
           style={styles.input}
           placeholder="Ex.: 20 mg"
@@ -121,10 +106,7 @@ export default function Medicamentos({ navigation }) {
           onChangeText={setDosagem}
         />
 
-        <Text style={styles.label}>
-          Horário:
-        </Text>
-
+        <Text style={styles.label}>Horário:</Text>
         <TextInput
           style={styles.input}
           placeholder="Ex.: 08:00"
@@ -132,10 +114,7 @@ export default function Medicamentos({ navigation }) {
           onChangeText={setHorario}
         />
 
-        <Text style={styles.label}>
-          Observações:
-        </Text>
-
+        <Text style={styles.label}>Observações:</Text>
         <TextInput
           style={styles.inputGrande}
           multiline
@@ -149,17 +128,11 @@ export default function Medicamentos({ navigation }) {
           style={styles.botaoFormulario}
           onPress={salvarMedicamento}
         >
-
-          <Text style={styles.textoBotaoInicial}>
-            Salvar medicamento
-          </Text>
-
+          <Text style={styles.textoBotaoInicial}>Salvar medicamento</Text>
         </TouchableOpacity>
-
       </View>
 
       <Rodape navigation={navigation} />
-
     </View>
   );
 }
