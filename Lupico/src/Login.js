@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   View,
   Image,
-  Alert,
 } from 'react-native';
 
 import { styles } from './Style';
@@ -14,10 +13,13 @@ import { supabase } from './services/supabase';
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [mensagem, setMensagem] = useState('');
 
   async function fazerLogin() {
+    setMensagem('');
+
     if (!email || !senha) {
-      Alert.alert('Atenção', 'Preencha o e-mail e a senha.');
+      setMensagem('Preencha o e-mail e a senha.');
       return;
     }
 
@@ -27,21 +29,24 @@ export default function Login({ navigation }) {
       .eq('email', email.trim())
       .eq('senha', senha.trim());
 
-    console.log('DATA:', data);
-    console.log('ERROR:', error);
-
     if (error) {
-      Alert.alert('Erro', 'Erro ao tentar fazer login.');
+      setMensagem('Erro ao tentar fazer login.');
       return;
     }
 
     if (!data || data.length === 0) {
-      Alert.alert('Erro', 'E-mail ou senha incorretos.');
+      setMensagem('E-mail ou senha incorretos.');
       return;
     }
 
-    Alert.alert('Sucesso', 'Login realizado com sucesso!');
-    navigation.navigate('Home');
+    setMensagem('Login realizado com sucesso!');
+
+    setEmail('');
+    setSenha('');
+
+    setTimeout(() => {
+      navigation.navigate('Home');
+    }, 800);
   }
 
   return (
@@ -61,6 +66,10 @@ export default function Login({ navigation }) {
 
       <View style={styles.cardTela}>
         <Text style={styles.tituloTela}>Efetuar login:</Text>
+
+        {mensagem !== '' && (
+          <Text style={styles.mensagemSistema}>{mensagem}</Text>
+        )}
 
         <Text style={styles.label}>E-mail para login:</Text>
         <TextInput

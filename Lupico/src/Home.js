@@ -1,13 +1,15 @@
+import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './Style';
 import Rodape from './componentes/Rodape';
+import MenuLateral from './componentes/MenuLateral';
 
 export default function Home({ navigation }) {
+  const [menuAberto, setMenuAberto] = useState(false);
+
   return (
     <View style={styles.containerTela}>
-
-      {/* Cabeçalho */}
       <View style={styles.headerTela}>
         <View style={styles.logoHeader}>
           <Image
@@ -19,17 +21,22 @@ export default function Home({ navigation }) {
           <Text style={styles.nomeHeader}>Lúpico</Text>
         </View>
 
-        <Text style={styles.menuIcone}>☰</Text>
+        <TouchableOpacity onPress={() => setMenuAberto(!menuAberto)}>
+          <Text style={styles.menuIcone}>☰</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Conteúdo */}
+      {menuAberto && (
+        <MenuLateral
+          navigation={navigation}
+          fecharMenu={() => setMenuAberto(false)}
+        />
+      )}
+
       <View style={styles.homeConteudo}>
-        <Text style={styles.homeTitulo}>
-          Olá, Marjore!
-        </Text>
+        <Text style={styles.homeTitulo}>Olá, Marjore!</Text>
 
         <View style={styles.cardsContainer}>
-
           <TouchableOpacity
             style={styles.cardHome}
             onPress={() => navigation.navigate('Receitas')}
@@ -77,10 +84,8 @@ export default function Home({ navigation }) {
             />
             <Text style={styles.textoCardHome}>Cuidados</Text>
           </TouchableOpacity>
-
         </View>
 
-        {/* Caixa de informações */}
         <View style={styles.caixaInfo}>
           <Text style={styles.textoInfo}>
             Lúpus não é leve só porque não conseguimos ver a dor.
@@ -94,11 +99,7 @@ export default function Home({ navigation }) {
               )
             }
           >
-            <Ionicons
-              name="link-outline"
-              size={30}
-              color="#893CDB"
-            />
+            <Ionicons name="link-outline" size={30} color="#893CDB" />
 
             <Text style={styles.textoLink}>
               Clique para mais informações
@@ -107,9 +108,7 @@ export default function Home({ navigation }) {
         </View>
       </View>
 
-      {/* Rodapé */}
       <Rodape navigation={navigation} />
-
     </View>
   );
 }

@@ -407,5 +407,31 @@ mensagemSistema: {
   marginBottom: 18,
 },
 
+//Menu lateral
+
+menuLateral: {
+  position: 'absolute',
+  top: 86,
+  right: 15,
+  backgroundColor: '#FFFFFF',
+  borderWidth: 1.5,
+  borderColor: ROXO,
+  borderRadius: 12,
+  padding: 10,
+  zIndex: 10,
+  elevation: 5,
+},
+
+itemMenu: {
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+},
+
+textoMenu: {
+  color: ROXO,
+  fontSize: 16,
+  fontWeight: 'bold',
+},
+
 });
 
