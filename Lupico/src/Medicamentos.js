@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   Image,
   TouchableOpacity,
   TextInput,
+  ScrollView,
 } from 'react-native';
 
 import { styles } from './Style';
@@ -19,6 +20,21 @@ export default function Medicamentos({ navigation }) {
   const [observacoes, setObservacoes] = useState('');
   const [mensagem, setMensagem] = useState('');
   const [menuAberto, setMenuAberto] = useState(false);
+  const [historico, setHistorico] = useState([]);
+
+  async function buscarHistorico() {
+    const { data, error } = await supabase
+      .from('medicamentos')
+      .select('*')
+      .order('data_registro', { ascending: false });
+
+    if (error) {
+      setMensagem(error.message);
+      return;
+    }
+
+    setHistorico(data);
+  }
 
   async function salvarMedicamento() {
     if (!nome || !dosagem || !horario) {
@@ -49,10 +65,12 @@ export default function Medicamentos({ navigation }) {
     setHorario('');
     setObservacoes('');
 
-    setTimeout(() => {
-      navigation.navigate('Home');
-    }, 1500);
+    buscarHistorico();
   }
+
+  useEffect(() => {
+    buscarHistorico();
+  }, []);
 
   return (
     <View style={styles.containerTela}>
@@ -79,7 +97,7 @@ export default function Medicamentos({ navigation }) {
         />
       )}
 
-      <View style={styles.cardTela}>
+      <ScrollView style={styles.cardTela}>
         <Text style={styles.tituloTela}>Medicamentos</Text>
 
         <Text style={styles.textoInfo}>
@@ -130,7 +148,31 @@ export default function Medicamentos({ navigation }) {
         >
           <Text style={styles.textoBotaoInicial}>Salvar medicamento</Text>
         </TouchableOpacity>
-      </View>
+
+        <Text style={styles.tituloHistorico}>Histórico de medicamentos</Text>
+
+        {historico.length === 0 ? (
+          <Text style={styles.textoInfo}>Nenhum medicamento cadastrado.</Text>
+        ) : (
+          historico.map((item) => (
+            <View key={item.id} style={styles.cardHistorico}>
+              <Text style={styles.labelPerfil}>Medicamento:</Text>
+              <Text style={styles.valorPerfil}>{item.nome}</Text>
+
+              <Text style={styles.labelPerfil}>Dosagem:</Text>
+              <Text style={styles.valorPerfil}>{item.dosagem}</Text>
+
+              <Text style={styles.labelPerfil}>Horário:</Text>
+              <Text style={styles.valorPerfil}>{item.horario}</Text>
+
+              <Text style={styles.labelPerfil}>Observações:</Text>
+              <Text style={styles.valorPerfil}>
+                {item.observacoes || 'Sem observações'}
+              </Text>
+            </View>
+          ))
+        )}
+      </ScrollView>
 
       <Rodape navigation={navigation} />
     </View>

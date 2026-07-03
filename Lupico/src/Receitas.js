@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
@@ -12,6 +12,33 @@ export default function Receitas({ navigation }) {
   const [menuAberto, setMenuAberto] = useState(false);
   const [receitas, setReceitas] = useState([]);
   const [mensagem, setMensagem] = useState('');
+
+  async function buscarReceitas() {
+    const { data, error } = await supabase.storage
+      .from('receitas')
+      .list('', {
+        limit: 100,
+        sortBy: { column: 'created_at', order: 'desc' },
+      });
+
+    if (error) {
+      setMensagem(error.message);
+      return;
+    }
+
+    const listaFormatada = data.map((arquivo) => {
+      const { data: urlData } = supabase.storage
+        .from('receitas')
+        .getPublicUrl(arquivo.name);
+
+      return {
+        nome: arquivo.name,
+        url: urlData.publicUrl,
+      };
+    });
+
+    setReceitas(listaFormatada);
+  }
 
   async function selecionarReceita() {
     setMensagem('');
@@ -42,20 +69,13 @@ export default function Receitas({ navigation }) {
       return;
     }
 
-    const { data } = supabase.storage
-      .from('receitas')
-      .getPublicUrl(nomeArquivo);
-
-    setReceitas((listaAnterior) => [
-      ...listaAnterior,
-      {
-        nome: arquivo.name,
-        url: data.publicUrl,
-      },
-    ]);
-
     setMensagem('Receita enviada com sucesso!');
+    buscarReceitas();
   }
+
+  useEffect(() => {
+    buscarReceitas();
+  }, []);
 
   return (
     <View style={styles.containerTela}>
@@ -94,9 +114,7 @@ export default function Receitas({ navigation }) {
         )}
 
         {receitas.length === 0 ? (
-          <Text style={styles.textoInfo}>
-            Nenhuma receita adicionada.
-          </Text>
+          <Text style={styles.textoInfo}>Nenhuma receita adicionada.</Text>
         ) : (
           receitas.map((item, index) => (
             <TouchableOpacity

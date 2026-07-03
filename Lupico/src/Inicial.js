@@ -22,13 +22,13 @@ export default function Inicial({ navigation }) {
 
       <View style={styles.conteudoInicial}>
         <View style={styles.areaLogo}>
+
           <Image
-            source={require('../assets/imagens/logo.jpeg')}
+            source={require('../assets/imagens/logo.png')}
             style={styles.logoInicial}
             resizeMode="contain"
           />
 
-          <Text style={styles.nomeApp}>Lúpico</Text>
         </View>
 
         <View style={styles.caixaDescricao}>
@@ -43,15 +43,20 @@ export default function Inicial({ navigation }) {
           style={styles.botaoInicial}
           onPress={() => navigation.navigate('Login')}
         >
-          <Text style={styles.textoBotaoInicial}>Efetuar Login</Text>
+          <Text style={styles.textoBotaoInicial}>
+            Efetuar Login
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.botaoInicial}
           onPress={() => navigation.navigate('Cadastro')}
         >
-          <Text style={styles.textoBotaoInicial}>Cadastrar</Text>
+          <Text style={styles.textoBotaoInicial}>
+            Cadastrar
+          </Text>
         </TouchableOpacity>
+
       </View>
 
       <View style={styles.footerInicial} />

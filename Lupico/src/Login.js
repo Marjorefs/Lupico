@@ -10,6 +10,7 @@ import {
 import { styles } from './Style';
 import { supabase } from './services/supabase';
 import MenuInicial from './componentes/MenuInicial';
+import { setUsuarioLogado } from './services/usuarioLogado';
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
@@ -41,6 +42,7 @@ export default function Login({ navigation }) {
       return;
     }
 
+    setUsuarioLogado(data[0]);
     setMensagem('Login realizado com sucesso!');
 
     setEmail('');

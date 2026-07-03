@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
@@ -12,6 +12,33 @@ export default function Exames({ navigation }) {
   const [menuAberto, setMenuAberto] = useState(false);
   const [exames, setExames] = useState([]);
   const [mensagem, setMensagem] = useState('');
+
+  async function buscarExames() {
+    const { data, error } = await supabase.storage
+      .from('exames')
+      .list('', {
+        limit: 100,
+        sortBy: { column: 'created_at', order: 'desc' },
+      });
+
+    if (error) {
+      setMensagem(error.message);
+      return;
+    }
+
+    const listaFormatada = data.map((arquivo) => {
+      const { data: urlData } = supabase.storage
+        .from('exames')
+        .getPublicUrl(arquivo.name);
+
+      return {
+        nome: arquivo.name,
+        url: urlData.publicUrl,
+      };
+    });
+
+    setExames(listaFormatada);
+  }
 
   async function selecionarExame() {
     setMensagem('');
@@ -42,20 +69,13 @@ export default function Exames({ navigation }) {
       return;
     }
 
-    const { data } = supabase.storage
-      .from('exames')
-      .getPublicUrl(nomeArquivo);
-
-    setExames((listaAnterior) => [
-      ...listaAnterior,
-      {
-        nome: arquivo.name,
-        url: data.publicUrl,
-      },
-    ]);
-
     setMensagem('Exame enviado com sucesso!');
+    buscarExames();
   }
+
+  useEffect(() => {
+    buscarExames();
+  }, []);
 
   return (
     <View style={styles.containerTela}>
@@ -94,9 +114,7 @@ export default function Exames({ navigation }) {
         )}
 
         {exames.length === 0 ? (
-          <Text style={styles.textoInfo}>
-            Nenhum exame adicionado.
-          </Text>
+          <Text style={styles.textoInfo}>Nenhum exame adicionado.</Text>
         ) : (
           exames.map((item, index) => (
             <TouchableOpacity

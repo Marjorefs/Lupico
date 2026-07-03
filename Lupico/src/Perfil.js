@@ -4,30 +4,23 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { styles } from './Style';
 import Rodape from './componentes/Rodape';
 import MenuLateral from './componentes/MenuLateral';
-import { supabase } from './services/supabase';
+import { getUsuarioLogado } from './services/usuarioLogado';
 
 export default function Perfil({ navigation }) {
   const [usuario, setUsuario] = useState(null);
   const [mensagem, setMensagem] = useState('');
   const [menuAberto, setMenuAberto] = useState(false);
 
-  async function buscarUsuario() {
-    const { data, error } = await supabase
-      .from('usuarios')
-      .select('*')
-      .order('id', { ascending: false })
-      .limit(1);
+  function buscarUsuario() {
+    const usuarioAtual = getUsuarioLogado();
 
-    if (error) {
-      setMensagem('Erro ao buscar dados do perfil.');
+    if (usuarioAtual) {
+      setUsuario(usuarioAtual);
+      setMensagem('');
       return;
     }
 
-    if (data && data.length > 0) {
-      setUsuario(data[0]);
-    } else {
-      setMensagem('Nenhum usuário encontrado.');
-    }
+    setMensagem('Nenhum usuário logado encontrado.');
   }
 
   useEffect(() => {

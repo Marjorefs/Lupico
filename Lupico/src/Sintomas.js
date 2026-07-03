@@ -1,20 +1,33 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { styles } from './Style';
 import Rodape from './componentes/Rodape';
 import MenuLateral from './componentes/MenuLateral';
 import { supabase } from './services/supabase';
 
 export default function Sintomas({ navigation }) {
-
   const [humor, setHumor] = useState('');
   const [sintomas, setSintomas] = useState('');
   const [observacoes, setObservacoes] = useState('');
   const [mensagem, setMensagem] = useState('');
   const [menuAberto, setMenuAberto] = useState(false);
+  const [historico, setHistorico] = useState([]);
+
+  async function buscarHistorico() {
+    const { data, error } = await supabase
+      .from('sintomas')
+      .select('*')
+      .order('data_registro', { ascending: false });
+
+    if (error) {
+      setMensagem(error.message);
+      return;
+    }
+
+    setHistorico(data);
+  }
 
   async function salvarSintomas() {
-
     if (!humor || !sintomas) {
       setMensagem('Preencha como você está e os sintomas sentidos.');
       return;
@@ -36,22 +49,20 @@ export default function Sintomas({ navigation }) {
     }
 
     setMensagem('Sintomas registrados com sucesso!');
-
     setHumor('');
     setSintomas('');
     setObservacoes('');
 
-    setTimeout(() => {
-      navigation.navigate('Home');
-    }, 1500);
+    buscarHistorico();
   }
+
+  useEffect(() => {
+    buscarHistorico();
+  }, []);
 
   return (
     <View style={styles.containerTela}>
-
-      {/* Cabeçalho */}
       <View style={styles.headerTela}>
-
         <View style={styles.logoHeader}>
           <Image
             source={require('../assets/imagens/borboleta.png')}
@@ -59,15 +70,12 @@ export default function Sintomas({ navigation }) {
             resizeMode="contain"
           />
 
-          <Text style={styles.nomeHeader}>
-            Lúpico
-          </Text>
+          <Text style={styles.nomeHeader}>Lúpico</Text>
         </View>
 
         <TouchableOpacity onPress={() => setMenuAberto(!menuAberto)}>
           <Text style={styles.menuIcone}>☰</Text>
         </TouchableOpacity>
-
       </View>
 
       {menuAberto && (
@@ -77,28 +85,18 @@ export default function Sintomas({ navigation }) {
         />
       )}
 
-      {/* Conteúdo */}
-
-      <View style={styles.cardTela}>
-
-        <Text style={styles.tituloTela}>
-          Diário de sintomas
-        </Text>
+      <ScrollView style={styles.cardTela}>
+        <Text style={styles.tituloTela}>Diário de sintomas</Text>
 
         <Text style={styles.textoInfo}>
           Registre como você está se sentindo hoje.
         </Text>
 
         {mensagem !== '' && (
-          <Text style={styles.mensagemSistema}>
-            {mensagem}
-          </Text>
+          <Text style={styles.mensagemSistema}>{mensagem}</Text>
         )}
 
-        <Text style={styles.label}>
-          Como você está hoje?
-        </Text>
-
+        <Text style={styles.label}>Como você está hoje?</Text>
         <TextInput
           style={styles.input}
           placeholder="Ex: Bem, regular, mal..."
@@ -106,10 +104,7 @@ export default function Sintomas({ navigation }) {
           onChangeText={setHumor}
         />
 
-        <Text style={styles.label}>
-          Sintomas sentidos:
-        </Text>
-
+        <Text style={styles.label}>Sintomas sentidos:</Text>
         <TextInput
           style={styles.inputGrande}
           multiline
@@ -119,10 +114,7 @@ export default function Sintomas({ navigation }) {
           onChangeText={setSintomas}
         />
 
-        <Text style={styles.label}>
-          Observações:
-        </Text>
-
+        <Text style={styles.label}>Observações:</Text>
         <TextInput
           style={styles.inputGrande}
           multiline
@@ -136,15 +128,35 @@ export default function Sintomas({ navigation }) {
           style={styles.botaoFormulario}
           onPress={salvarSintomas}
         >
-          <Text style={styles.textoBotaoInicial}>
-            Confirmar
-          </Text>
+          <Text style={styles.textoBotaoInicial}>Confirmar</Text>
         </TouchableOpacity>
 
-      </View>
+        <Text style={styles.tituloHistorico}>Histórico de sintomas</Text>
+
+        {historico.length === 0 ? (
+          <Text style={styles.textoInfo}>Nenhum registro encontrado.</Text>
+        ) : (
+          historico.map((item) => (
+            <View key={item.id} style={styles.cardHistorico}>
+              <Text style={styles.labelPerfil}>Humor:</Text>
+              <Text style={styles.valorPerfil}>{item.humor}</Text>
+
+              <Text style={styles.labelPerfil}>Sintomas:</Text>
+              <Text style={styles.valorPerfil}>{item.sintomas}</Text>
+
+              <Text style={styles.labelPerfil}>Observações:</Text>
+              <Text style={styles.valorPerfil}>{item.observacoes || 'Sem observações'}</Text>
+
+              <Text style={styles.labelPerfil}>Data:</Text>
+              <Text style={styles.valorPerfil}>
+                {new Date(item.data_registro).toLocaleString('pt-BR')}
+              </Text>
+            </View>
+          ))
+        )}
+      </ScrollView>
 
       <Rodape navigation={navigation} />
-
     </View>
   );
 }

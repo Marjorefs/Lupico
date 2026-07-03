@@ -39,8 +39,8 @@ export const styles = StyleSheet.create({
   },
 
   logoInicial: {
-    width: 220,
-    height: 160,
+    width: 350,
+    height: 250,
   },
 
   nomeApp: {
@@ -431,6 +431,25 @@ textoMenu: {
   color: ROXO,
   fontSize: 16,
   fontWeight: 'bold',
+},
+
+// Histórico sintomas/medicamentos
+
+tituloHistorico: {
+  color: ROXO,
+  fontSize: 20,
+  fontWeight: 'bold',
+  marginTop: 20,
+  marginBottom: 12,
+},
+
+cardHistorico: {
+  backgroundColor: '#F7E9FF',
+  borderWidth: 1.5,
+  borderColor: ROXO,
+  borderRadius: 12,
+  padding: 14,
+  marginBottom: 12,
 },
 
 });
